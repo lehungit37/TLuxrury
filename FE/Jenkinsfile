@@ -1,0 +1,324 @@
+pipeline
+{
+
+    agent any
+
+    options
+    {
+        office365ConnectorWebhooks([
+            [name: "enviroment-admin-webapp", url: 'https://centicvn.webhook.office.com/webhookb2/705d60af-353b-4f35-b000-a1328041a994@0215cbfc-2a28-44da-9c2c-41a3655fab4b/JenkinsCI/d09720be920d4d1abb03dc5f2e77f56e/4407cf18-f1dd-4b20-96d2-14bc447d130d', notifyBackToNormal: true, notifyFailure: true, notifyRepeatedFailure: true, notifySuccess: true, notifyAborted: true]
+        ])
+    }
+
+    // options
+    // {
+    //     office365ConnectorWebhooks([
+    //         [name: "system-management", url: 'https://centicvn.webhook.office.com/webhookb2/705d60af-353b-4f35-b000-a1328041a994@0215cbfc-2a28-44da-9c2c-41a3655fab4b/IncomingWebhook/809d764727bb4996ba0821ae0b26c878/4407cf18-f1dd-4b20-96d2-14bc447d130d', notifyBackToNormal: true, notifyFailure: true, notifyRepeatedFailure: true, notifySuccess: true, notifyAborted: true]
+    //     ])
+    // }
+
+    environment
+    {
+        // Configure deploy        
+        nameRepo = "enviroment-admin-webapp"
+        urlRepo = "https://github.com/Danateq/env_admin_webapp.git"
+        ipJenkins = "10.49.46.62:5000"
+        ipJenkinsPublic = "14.224.161.154:5000"
+        fileNameYaml = "${nameRepo}.yaml"
+        fileNameExcuteYaml = "${nameRepo}-excute.yaml"
+        fileNameEnv = ".env"
+
+        //->Dev
+        userDevMt= "devmt"
+        ipDevMt = "10.49.46.169"
+        pathFolderDeployDevMt = "/home/devmt/devmt-yaml"
+        credentialDevMt = "devmt"
+
+        //->QA
+        userQaMt= "qamt"       
+        ipQaMt = "10.49.46.168"        
+        pathFolderDeployQaMt = "/home/qamt/qamt-yaml"        
+        credentialQaMt = "qamt"
+
+        //->Product Quan Trac
+        userProduct= "quantrac-mt"
+        ipProduct = "10.17.20.81"
+        credentialProduct = "quantrac-mt"
+        pathFolderDeployProduct = "/home/quantrac-mt/workspace/product-mt"
+
+        //->Product Tai Nguyen Nuoc
+        userProductTnn= "tainguyennuoc-mt"
+        credentialProductTnn = "tainguyennuoc-mt"
+        ipProductTnn = "10.17.20.82"
+        pathFolderDeployProductTnn = "/home/tainguyennuoc-mt/workspace/product-tnn"        
+
+        //->Sitech
+        userSitech = "sontn"
+        ipSitech = "103.151.53.111"
+        credentialSitech = "sitech-jenkins"        
+        pathFolderDeploySitech = "/home/sontn/sitech-yaml"
+
+        //->STTTT
+        userSTTTT = "centic"
+        ipSTTTT = "10.196.160.15"
+        credentialSTTTT = "stttt-jenkins"        
+        pathFolderDeploySTTTT = "/home/centic/workspace/yaml"
+
+    }
+
+    stages
+    {
+        stage('CLONE REPOSITORY')
+        {
+            steps
+            {                
+                echo "==============================CLONE REPOSITORY: ${env.nameRepo}=============================="                
+
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-jenkins', url: env.urlRepo]]])                
+                sh 'git submodule update --init'
+
+                script
+                {                 
+                    if (env.TAG_NAME != null)
+                    {                
+                        env.gitTagVersion = env.TAG_NAME
+
+                        if (env.gitTagVersion.contains('sitech'))
+                            env.deploySitech = true;
+                        else 
+                            env.deploySitech = false;
+                        
+                        if (env.gitTagVersion.contains('stnmt'))
+                            env.deploySTNMT = true;
+                        else 
+                            env.deploySTNMT = false;
+
+                        if (env.gitTagVersion.contains('stttt'))
+                            env.deploySTTTT = true;
+                        else 
+                            env.deploySTTTT = false;
+                    }
+                    else
+                        env.gitTagVersion = "latest"
+                }
+            }
+        }
+
+        stage('CONFIGURE BEFORE DEPLOY')
+        {
+            steps
+            {
+                script
+                {
+                    if (env.gitTagVersion == "latest" || env.gitTagVersion.contains('dev'))
+                    {
+
+                        env.deployProduct = "false"
+
+                        if (env.gitTagVersion == "latest")
+                        {                                                        
+                            echo "==============================DEPLOY TO DEV SERVER ENVIROMENT=============================="
+                            env.ipDevQaMt = env.ipQaMt
+                            env.credentialDevQaMt = env.credentialQaMt
+                            env.userDevQaMt = env.userQaMt
+                            env.pathFolderDeployDevQaMt = env.pathFolderDeployQaMt
+
+                            sh 'sudo sed -i \'s|REACT_APP_NODE_ENV.*|REACT_APP_NODE_ENV = production|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_API_URL.*|REACT_APP_API_URL = https://qamt.danateq.vn|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_SIGNALING_SERVER_ADDRESS.*|REACT_APP_SIGNALING_SERVER_ADDRESS = qamt.danateq.vn/signaling|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_TURN_ADDRESS.*|REACT_APP_TURN_ADDRESS = turn:14.224.161.154:30478|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_TURN_USERNAME.*|REACT_APP_TURN_USERNAME = turnuser|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_TURN_PASSWORD.*|REACT_APP_TURN_PASSWORD = turnpass|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_SYSTEM.*|REACT_APP_SYSTEM = STNMT|\' $fileNameEnv'
+                        }                                                                                
+                    }
+                    else
+                    {
+                        env.deployProduct = "true"
+                        
+                        if (env.deploySitech == "true")
+                        {
+                            sh 'sudo sed -i \'s|REACT_APP_NODE_ENV.*|REACT_APP_NODE_ENV = production|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_API_URL.*|REACT_APP_API_URL = http://cloud.sitech.vn|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_SIGNALING_SERVER_ADDRESS.*|REACT_APP_SIGNALING_SERVER_ADDRESS = cloud.sitech.vn/signaling|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_TURN_ADDRESS.*|REACT_APP_TURN_ADDRESS = turn:14.224.161.154:30478|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_TURN_USERNAME.*|REACT_APP_TURN_USERNAME = turnuser|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_TURN_PASSWORD.*|REACT_APP_TURN_PASSWORD = turnpass|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_SYSTEM.*|REACT_APP_SYSTEM = SITECH|\' $fileNameEnv' 
+                        }
+
+                        if (env.deploySTNMT == "true")
+                        {
+                            sh 'sudo sed -i \'s|REACT_APP_NODE_ENV.*|REACT_APP_NODE_ENV = production|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_API_URL.*|REACT_APP_API_URL = https://nentangquantrac.tnmt.danang.gov.vn|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_SIGNALING_SERVER_ADDRESS.*|REACT_APP_SIGNALING_SERVER_ADDRESS = nentangquantrac.tnmt.danang.gov.vn/signaling|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_TURN_ADDRESS.*|REACT_APP_TURN_ADDRESS = turn:103.101.77.89:30478?transport=udp|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_TURN_USERNAME.*|REACT_APP_TURN_USERNAME = turnuser|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_TURN_PASSWORD.*|REACT_APP_TURN_PASSWORD = turnpass|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_SYSTEM.*|REACT_APP_SYSTEM = STNMT|\' $fileNameEnv'                        
+                            sh 'sudo sed -i \'s|REACT_APP_API_ADDRESS_THANH_TRA.*|REACT_APP_API_ADDRESS_THANH_TRA = https://49.156.54.55:8081|\' $fileNameEnv'                            
+                        }
+
+                        if (env.deploySTTTT == "true")
+                        {
+                            sh 'sudo sed -i \'s|REACT_APP_NODE_ENV.*|REACT_APP_NODE_ENV = production|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_API_URL.*|REACT_APP_API_URL = http://49.156.54.167|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_SIGNALING_SERVER_ADDRESS.*|REACT_APP_SIGNALING_SERVER_ADDRESS = 49.156.54.167/signaling|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_TURN_ADDRESS.*|REACT_APP_TURN_ADDRESS = turn:14.224.161.154:30478|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_TURN_USERNAME.*|REACT_APP_TURN_USERNAME = turnuser|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_TURN_PASSWORD.*|REACT_APP_TURN_PASSWORD = turnpass|\' $fileNameEnv'
+                            sh 'sudo sed -i \'s|REACT_APP_SYSTEM.*|REACT_APP_SYSTEM = STTTT|\' $fileNameEnv'                             
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('BUILDING REGISTRY SERVER')
+        {
+            steps
+            {
+                echo "==============================BUILDING MICROSERVICE: $nameRepo:$gitTagVersion=============================="
+
+                sh 'sudo docker build -t $ipJenkins/$nameRepo --network host --rm .'
+                sh 'sudo docker tag $ipJenkins/$nameRepo $ipJenkins/$nameRepo:$gitTagVersion'
+                sh 'sudo docker push $ipJenkins/$nameRepo:$gitTagVersion'         
+            }
+        }
+
+        stage('DEPLOY PARALLEL')
+        {
+            parallel
+            {                            
+                stage('DEPLOY DEVQA ENVIROMENMT')
+                {
+                    steps
+                    {
+                        script
+                        {
+                            if (env.deployProduct == "false")
+                            {
+                                echo "----------------DEPLOY DEVQA ENVIROMENT----------------"
+
+                                sshagent(["$credentialDevQaMt"])
+                                {
+                                    sh 'ssh -o StrictHostKeyChecking=no -l $userDevQaMt $ipDevQaMt "docker pull $ipJenkins/$nameRepo:$gitTagVersion && \
+                                    docker tag $ipJenkins/$nameRepo:$gitTagVersion localhost:5000/$nameRepo:$gitTagVersion && \
+                                    docker push localhost:5000/$nameRepo:$gitTagVersion && \
+                                    cd $pathFolderDeployDevQaMt && \
+                                    cp $fileNameYaml $fileNameExcuteYaml && \
+                                    sed -i \'s|image: .*|image: localhost:5000/$nameRepo:$gitTagVersion|\' $fileNameExcuteYaml && \
+                                    sed -i \'s|THIS_STRING_IS_REPLACED_DURING_BUILD|$(date)|\' $fileNameExcuteYaml && \
+                                    kubectl apply -f $fileNameExcuteYaml && \
+                                    rm -rf $fileNameExcuteYaml "'
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('DEPLOY QUANTRAC PRODUCT')
+                {
+                    steps
+                    {
+                        script
+                        {
+                            if ((env.deployProduct == "true") && (env.gitTagVersion.contains('stnmt')))
+                            {
+                                echo "----------------DEPLOY QUANTRAC PRODUCT----------------"
+                                sshagent(["$credentialProduct"])
+                                {
+                                    sh 'ssh -o StrictHostKeyChecking=no -l $userProduct $ipProduct "docker pull $ipJenkinsPublic/$nameRepo:$gitTagVersion && \
+                                    docker tag $ipJenkinsPublic/$nameRepo:$gitTagVersion localhost:5000/$nameRepo:$gitTagVersion && \
+                                    docker push localhost:5000/$nameRepo:$gitTagVersion && \
+                                    cd $pathFolderDeployProduct && \
+                                    cp $fileNameYaml $fileNameExcuteYaml && \
+                                    sed -i \'s|image: .*|image: localhost:5000/$nameRepo:$gitTagVersion|\' $fileNameExcuteYaml && \
+                                    sed -i \'s|THIS_STRING_IS_REPLACED_DURING_BUILD|$(date)|\' $fileNameExcuteYaml && \
+                                    kubectl apply -f $fileNameExcuteYaml && \
+                                    rm -rf $fileNameExcuteYaml "'
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('DEPLOY TNN PRODUCT')
+                {
+                    steps
+                    {
+                        script
+                        {
+                            if ((env.deployProduct == "true") && (env.gitTagVersion.contains('stnmt')))
+                            {
+                                echo "----------------DEPLOY TNN PRODUCT----------------"
+
+                                sshagent(["$credentialProductTnn"])
+                                {
+                                    sh 'ssh -o StrictHostKeyChecking=no -l $userProductTnn $ipProductTnn "docker pull $ipJenkinsPublic/$nameRepo:$gitTagVersion && \
+                                    docker tag $ipJenkinsPublic/$nameRepo:$gitTagVersion localhost:5000/$nameRepo:$gitTagVersion && \
+                                    docker push localhost:5000/$nameRepo:$gitTagVersion && \
+                                    cd $pathFolderDeployProductTnn && \
+                                    cp $fileNameYaml $fileNameExcuteYaml && \
+                                    sed -i \'s|image: .*|image: localhost:5000/$nameRepo:$gitTagVersion|\' $fileNameExcuteYaml && \
+                                    sed -i \'s|THIS_STRING_IS_REPLACED_DURING_BUILD|$(date)|\' $fileNameExcuteYaml && \
+                                    kubectl apply -f $fileNameExcuteYaml && \
+                                    rm -rf $fileNameExcuteYaml "'
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('DEPLOY SITECH PRODUCT')
+                {
+                    steps
+                    {
+                        script
+                        {
+                            if ((env.deployProduct == "true") && (env.gitTagVersion.contains('sitech')))
+                            {
+                                echo "----------------DEPLOY SITECH PRODUCT----------------"
+
+                                sshagent(["$credentialSitech"])
+                                {
+                                    sh 'ssh -o StrictHostKeyChecking=no -l $userSitech $ipSitech "docker pull $ipJenkinsPublic/$nameRepo:$gitTagVersion && \
+                                    docker tag $ipJenkinsPublic/$nameRepo:$gitTagVersion localhost:5000/$nameRepo:$gitTagVersion && \
+                                    docker push localhost:5000/$nameRepo:$gitTagVersion && \
+                                    cd $pathFolderDeploySitech && \
+                                    cp $fileNameYaml $fileNameExcuteYaml && \
+                                    sed -i \'s|image: .*|image: localhost:5000/$nameRepo:$gitTagVersion|\' $fileNameExcuteYaml && \
+                                    sed -i \'s|THIS_STRING_IS_REPLACED_DURING_BUILD|$(date)|\' $fileNameExcuteYaml && \
+                                    kubectl apply -f $fileNameExcuteYaml && \
+                                    rm -rf $fileNameExcuteYaml"'
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('DEPLOY STTTT PRODUCT')
+                {
+                    steps
+                    {
+                        script
+                        {
+                            if ((env.deployProduct == "true") && (env.gitTagVersion.contains('stttt')))
+                            {
+                                echo "----------------DEPLOY STTTT PRODUCT----------------"
+                                sshagent(["$credentialSTTTT"])
+                                {                                    
+                                    sh 'ssh -o StrictHostKeyChecking=no -l $userSTTTT $ipSTTTT "docker pull $ipJenkinsPublic/$nameRepo:$gitTagVersion && \
+                                    docker tag $ipJenkinsPublic/$nameRepo:$gitTagVersion localhost:5000/$nameRepo:$gitTagVersion && \
+                                    docker push localhost:5000/$nameRepo:$gitTagVersion && \
+                                    cd $pathFolderDeploySTTTT && \
+                                    cp $fileNameYaml $fileNameExcuteYaml && \
+                                    sed -i \'s|image: .*|image: localhost:5000/$nameRepo:$gitTagVersion|\' $fileNameExcuteYaml && \
+                                    sed -i \'s|THIS_STRING_IS_REPLACED_DURING_BUILD|$(date)|\' $fileNameExcuteYaml && \
+                                    kubectl apply -f $fileNameExcuteYaml && \
+                                    rm -rf $fileNameExcuteYaml"'
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

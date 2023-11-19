@@ -1,0 +1,70 @@
+import { IPayloadRole } from 'src/types/role';
+
+export const payloadRoleInit: IPayloadRole = {
+  limit: 15,
+  page: 1,
+  keyword: '',
+};
+
+export const PermissionSchemes = {
+  getListNewestData: 'get_list_newest_data',
+  getListMap: 'get_list_map',
+  getListUser: 'get_list_user',
+  addUser: 'add_user',
+  editUser: 'edit_user',
+  deleteUser: 'delete_user',
+  configUserStation: 'config_user_station',
+  getListRole: 'get_list_role',
+  addRole: 'add_role',
+  updateRole: 'update_role',
+  deleteRole: 'delete_role',
+  getListStation: 'get_list_station',
+  addStation: 'add_station',
+  editStation: 'edit_station',
+  deleteStation: 'delete_station',
+  configCamera: 'config_camera',
+  autoSample: 'auto_sample',
+  getViewGeneralReport: 'get_view_general_report',
+  getViewDetailReport: 'get_view_detail_report',
+  exportReport: 'export_report',
+  getListMonitoringType: 'get_list_monitoring_type',
+  addMonitoringType: 'add_monitoring_type',
+  editMonitoringType: 'edit_monitoring_type',
+  deleteMonitoringType: 'delete_monitoring_type',
+  getListMonitoringGroup: 'get_list_monitoring_group',
+  addMonitoringGroup: 'add_monitoring_group',
+  editMonitoringGroup: 'edit_monitoring_group',
+  deleteMonitoringGroup: 'delete_monitoring_group',
+  getListIndicator: 'get_list_indicator',
+  addIndicator: 'add_indicator',
+  editIndicator: 'edit_indicator',
+  deleteIndicator: 'delete_indicator',
+  getListData: 'get_list_data',
+  addData: 'add_data',
+  editData: 'edit_data',
+  deleteData: 'delete_data',
+  dataEntry: 'data_entry',
+  getListPost: 'get_list_post',
+  addPost: 'add_post',
+  editPost: 'edit_post',
+  deletePost: 'delete_post',
+  noticeEditor: 'notice_editor',
+  viewSystem: 'view_system',
+  editSystem: 'edit_system',
+  receiveSystemError: 'receive_system_error',
+
+  getApi: 'get_api',
+  addApi: 'add_api',
+  updateApi: 'update_api',
+  deleteApi: 'deleteApi',
+
+  getUserLog: 'get_user_log',
+  deleteUserLog: 'delete_user_log',
+
+  //system
+  getSystemSetting: 'get_system_setting',
+  updateSystemSetting: 'update_system_setting',
+
+  //penalty
+  getListPenalties: 'list_penalties',
+};

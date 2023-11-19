@@ -1,0 +1,50 @@
+.react-checkbox-tree ol {
+  display: flex;
+  flex-wrap: wrap;
+}
+.rct-checkbox {
+  width: 35px;
+}
+
+.react-checkbox-tree ol li {
+  width: 50%;
+  max-width: 50%;
+}
+
+.react-checkbox-tree ol li ol {
+  flex-direction: column;
+}
+.react-checkbox-tree ol li ol li {
+  width: 100%;
+  max-width: 100%;
+}
+.rct-node {
+  margin: 8px 0;
+}
+
+.rct-collapse {
+  width: 40px;
+}
+
+.rct-text .rct-node-icon {
+  display: none;
+}
+
+.rct-text,
+.react-checkbox-tree label,
+.rct-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.rct-title {
+  font-size: 14px;
+}
+
+.rct-collapse *,
+.rct-checkbox *,
+.rct-node-icon * {
+  display: inline-block;
+  margin: 0;
+  width: 25px;
+}
