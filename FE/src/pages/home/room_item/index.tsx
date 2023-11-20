@@ -121,7 +121,7 @@ const RoomItem = (props: Props) => {
           <Grid container columnSpacing={2} alignItems="center">
             <Grid item>
               <IconButton onClick={handleViewBooking}>
-                <Badge badgeContent={3} color="primary">
+                <Badge badgeContent={room.totalBooking || 0} color="primary">
                   <HourglassEmptyOutlined color="action" />
                 </Badge>
               </IconButton>
@@ -141,7 +141,7 @@ const RoomItem = (props: Props) => {
               </Popover>
             </Grid>
             <Grid item>
-              <Typography>Có 3 lượt đặt phòng</Typography>
+              <Typography>Có {room.totalBooking || 0} lượt đặt phòng</Typography>
             </Grid>
           </Grid>
         </Grid>

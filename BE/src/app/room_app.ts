@@ -155,4 +155,22 @@ export class RoomApp {
 
     return rooms;
   }
+
+  async getRoomCanBooing(payload: { fromDate: Date; toDate: Date }) {
+    const listRoomHaveBooking = await store
+      .roomBookingStore()
+      .getRoomCheckBooking(payload)
+      .catch((error) => {
+        throw new AppError(
+          "app.room.getRoomCanBooing",
+          "Lấy danh sách thất bại",
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          error.message
+        );
+      });
+    const roomIds = listRoomHaveBooking.map((item) => item.roomId);
+
+    const result = await store.roomStore().getRoomCanBooking(roomIds);
+    return result;
+  }
 }

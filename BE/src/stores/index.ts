@@ -9,6 +9,7 @@ import { RoomStore } from "./mongostore/room_store";
 import { RoomTypesStore } from "./mongostore/room_types";
 import { UserStores } from "./mongostore/user_store";
 import { SessionStore } from "./mongostore/session";
+import { RoomBookingStore } from "./mongostore/room_booking_store";
 
 const DB_PING_ATTEMPTS = 10;
 const DB_PING_TIMEOUT_SECS = 10;
@@ -21,6 +22,7 @@ class Store {
   roomTypes?: RoomTypesStore;
   token?: TokenStore;
   session?: SessionStore;
+  roomBooking?: RoomBookingStore;
 }
 
 class MongoStore {
@@ -63,6 +65,7 @@ class MongoStore {
       this.store.roomTypes = new RoomTypesStore(this.db);
       this.store.token = new TokenStore(this.db);
       this.store.session = new SessionStore(this.db);
+      this.store.roomBooking = new RoomBookingStore(this.db);
     }
   };
 
@@ -130,6 +133,14 @@ class MongoStore {
     }
 
     return this.store.session;
+  };
+
+  roomBookingStore = () => {
+    if (this.store.roomBooking === undefined) {
+      throw new Error("roomBookingStore is not setup yet");
+    }
+
+    return this.store.roomBooking;
   };
 }
 

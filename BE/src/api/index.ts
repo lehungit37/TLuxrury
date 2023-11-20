@@ -2,6 +2,7 @@ import { Router } from "express";
 import { permissionRouter } from "./routes/permission";
 import { roleRouter } from "./routes/roles";
 import { roomRouter } from "./routes/room";
+import { roomBookingRouter } from "./routes/room_booking";
 import { roomTypesRouter } from "./routes/room_types";
 import { userRouter } from "./routes/user_router";
 
@@ -12,5 +13,6 @@ export function apis(): Router {
   roleRouter(router);
   permissionRouter(router);
   roomTypesRouter(router);
+  roomBookingRouter(router);
   return router;
 }

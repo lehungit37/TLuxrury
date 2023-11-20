@@ -1,6 +1,7 @@
 import { IGetRoom, IPayloadGetRooms, IRoom, IRoomType } from 'src/types/room';
 import { createClient } from './axios_client';
 import qs from 'query-string';
+import { IRoomBooking } from 'src/types/roomBooking';
 
 const client = createClient('http://10.49.46.54:9000/api/v1');
 
@@ -33,5 +34,32 @@ export const roomApi = {
   getRoomsShow: (payload: IGetRoom) => {
     const query = qs.stringify(payload);
     return client.get<IRoom[]>(`/rooms/manage?${query}`);
+  },
+
+  getRoomCanBooking: (payload: { fromDate: Date; toDate: Date }) => {
+    const query = qs.stringify(payload);
+    return client.get<IRoom[]>(`/rooms/get_room_can_booking?${query}`);
+  },
+
+  createBooking: (data: IRoomBooking) => {
+    return client.post('room_booking', data);
+  },
+
+  checkCanCreateBooking: (payload: { roomId: string; fromDate: Date; toDate: Date }) => {
+    const query = qs.stringify(payload);
+
+    return client.get(`/room_booking/check_booking?${query}`);
+  },
+
+  getRoomBookingManagemnt: (payload: { page: number; limit: number; keyword: string }) => {
+    const query = qs.stringify(payload);
+
+    return client.get(`/room_booking?${query}`);
+  },
+  deleteRoomBooking: (id: string) => {
+    return client.delete(`/room_booking/${id}`);
+  },
+  updateRoomBooking: (id: string, data: any) => {
+    return client.put(`/room_booking/${id}`, data);
   },
 };

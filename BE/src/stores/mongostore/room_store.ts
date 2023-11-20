@@ -1,4 +1,4 @@
-import { IPayloadGetRoom } from "./../../interface/room";
+import { ERoomStatus, IPayloadGetRoom } from "./../../interface/room";
 import { BaseStore } from "./base_store";
 import { Db, ObjectId } from "mongodb";
 import { IPayloadGetRoomManagement, IRoom } from "../../interface/room";
@@ -206,6 +206,14 @@ export class RoomStore extends BaseStore {
           },
         },
         {
+          $lookup: {
+            from: "RoomBookings",
+            localField: "_id",
+            foreignField: "roomId",
+            as: "booking",
+          },
+        },
+        {
           $project: {
             _id: 0,
             id: "$_id",
@@ -221,9 +229,34 @@ export class RoomStore extends BaseStore {
             isShow: 1,
             createdAt: 1,
             updatedAt: 1,
+            totalBooking: {
+              $size: "$booking",
+            },
           },
         },
       ])
+      .toArray();
+
+    return result;
+  }
+
+  async getRoomCanBooking(ids: string[]) {
+    const result = this.collection
+      .find(
+        {
+          _id: { $nin: ids.map((id) => new ObjectId(id)) },
+          deletedAt: null,
+          status: ERoomStatus.FREE,
+        },
+        {
+          projection: {
+            _id: 0,
+            id: "$_id",
+            name: 1,
+            price: 1,
+          },
+        }
+      )
       .toArray();
 
     return result;

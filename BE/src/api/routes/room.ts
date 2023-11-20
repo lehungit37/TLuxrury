@@ -11,7 +11,7 @@ import { AppError, pushError } from "../../models/util";
 
 export const roomRouter = (router: Router) => {
   router.get("/rooms/manage", getRoomShowManage);
-  router.get("/rooms/getFreeBooking", getRoomsCanBooking);
+  router.get("/rooms/get_room_can_booking", getRoomsCanBooking);
   router.get("/rooms/:roomId", getRoomDetail);
   router.get("/rooms", getListRoomManager);
   router.post("/rooms", addRoom);
@@ -52,12 +52,19 @@ const getListRoomManager = async (
   }
 };
 
-const getRoomsCanBooking = (
+const getRoomsCanBooking = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    const payload = req.query;
+    const result = await new RoomApp().getRoomCanBooing({
+      fromDate: new Date(payload.fromDate as string),
+      toDate: new Date(payload.toDate as string),
+    });
+
+    res.json(result);
   } catch (error) {
     next(error);
   }

@@ -42,4 +42,5 @@ export interface IRoom {
     status: boolean;
     description: string;
   };
+  totalBooking: number;
 }

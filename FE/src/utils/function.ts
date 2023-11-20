@@ -93,3 +93,7 @@ export const checkMenuActive = (path: string, location: Location) => {
 export const formatNumberToVND = (number: number) => {
   return `${number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} VND`;
 };
+
+export const formatTime = (time: Date | string | Moment) => {
+  return moment(time).format('DD-MM-YYYY HH:mm');
+};

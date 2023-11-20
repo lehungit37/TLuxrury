@@ -84,3 +84,15 @@ export const getRoomsShow = createAsyncThunk<IRoom[], IGetRoom>(
     }
   },
 );
+
+export const getRoomCanBooking = createAsyncThunk<IRoom[], { fromDate: Date; toDate: Date }>(
+  'room/getRoomsShow',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const { data } = await roomApi.getRoomCanBooking(payload);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
