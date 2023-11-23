@@ -77,7 +77,7 @@
     "react-slick": "^0.29.0",
     "react-swipeable-views-utils": "^0.14.0",
     "react-virtual": "^2.10.4",
-    "recharts": "^2.2.0",
+    "recharts": "^2.10.1",
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.5.4",
     "styled-components": "^5.3.6",

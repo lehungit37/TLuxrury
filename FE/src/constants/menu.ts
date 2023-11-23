@@ -22,6 +22,8 @@ import {
   Upgrade,
   ReportProblemOutlined,
   ReportProblem,
+  PieChartOutlined,
+  PieChart,
 } from '@mui/icons-material';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 
@@ -71,10 +73,10 @@ export const CMenuList: IMenuRoute[] = [
     isExpandSetting: false,
   },
   {
-    title: 'Thanh toán',
+    title: 'Thống kê',
     path: CPath.revenueManagement,
-    icon: PaymentIcon,
-    activeIcon: PaymentIcon,
+    icon: PieChartOutlined,
+    activeIcon: PieChart,
     // permission: [PermissionSchemes.getListUser],
     isShow: true,
     isExpandSetting: false,

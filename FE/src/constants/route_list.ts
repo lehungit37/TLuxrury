@@ -67,7 +67,7 @@ export const CRouteList: IRoute[] = [
   },
   {
     path: CPath.revenueManagement,
-    name: 'Thanh toán',
+    name: 'Thống kê',
     component: RevenueManagement,
     layout: AdminLayout,
     // permission: [PermissionSchemes.getListUser],

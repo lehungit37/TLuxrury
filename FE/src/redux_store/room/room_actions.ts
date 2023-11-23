@@ -1,6 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { invoiceAPI } from 'src/clients/http/invoice';
 import { roomApi } from 'src/clients/http/room_client';
 import { IGetRoom, IPayloadGetRooms, IRoom, IRoomType } from 'src/types/room';
+import { toastMessage } from 'src/utils/toast';
+import saveAs from 'file-saver';
 
 export const getRoomTypes = createAsyncThunk<IRoomType[]>(
   'room/getRoomTypes',
@@ -86,12 +89,82 @@ export const getRoomsShow = createAsyncThunk<IRoom[], IGetRoom>(
 );
 
 export const getRoomCanBooking = createAsyncThunk<IRoom[], { fromDate: Date; toDate: Date }>(
-  'room/getRoomsShow',
+  'room/getRoomCanBooking',
   async (payload, { rejectWithValue }) => {
     try {
       const { data } = await roomApi.getRoomCanBooking(payload);
       return data;
     } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const createInvoice = createAsyncThunk<void, any>(
+  'room/createInvoice',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const { data } = await invoiceAPI.createInvoice(payload);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const createPayment = createAsyncThunk<any, string>(
+  'room/createPayment',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const { data } = await invoiceAPI.createPayment(payload);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const invoicePaided = createAsyncThunk<any, string>(
+  'room/invoicePaided',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const { data } = await invoiceAPI.invoicePaided(payload);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const getStatistical = createAsyncThunk<any, any>(
+  'room/getStatistical',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const { data } = await invoiceAPI.getStatistical(payload);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const exportExcel = createAsyncThunk<any, any>(
+  'room/exportExcel',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const data = await invoiceAPI.exportSyntheticViolation(payload);
+      const blob = new Blob([data.data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+
+      const filename = data?.headers?.['content-disposition'] || 'download.xls';
+
+      saveAs(blob, filename);
+      return data;
+    } catch (error: any) {
+      if (error) {
+        toastMessage.error(error?.message);
+      }
       return rejectWithValue(error);
     }
   },

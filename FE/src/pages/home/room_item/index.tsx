@@ -11,6 +11,7 @@ import { ERoomStatus, IRoom } from 'src/types/room';
 import { formatNumberToVND } from 'src/utils/function';
 import { renderColorRoom, renderColorRoomChip, renderRoomStatus } from 'src/utils/room';
 import { toastMessage } from 'src/utils/toast';
+import ModalPayment from '../modal_payment';
 import ModalUsingRoom from '../modal_using';
 
 type Props = {
@@ -37,43 +38,32 @@ const RoomItem = (props: Props) => {
   const id = open ? 'simple-popover' : undefined;
 
   const handleUsingRoom = () => {
-    // dispatch(
-    //   openModal({
-    //     modalId: CModalIds.usingRoom,
-    //     modalComponent: <ModalUsingRoom roomId={room.id} />,
-    //   }),
-    // );
-
-    dispatch(updateRoom({ roomId: room.id, newRoom: { ...room, status: ERoomStatus.WORKING } }))
-      .unwrap()
-      .then(() => {
-        setIsLoadingUpdate(false);
-        toastMessage.success('Cập nhật trạng thái thành công');
-      })
-      .catch(() => {
-        setIsLoadingUpdate(false);
-        toastMessage.error('Cập nhật trạng thái thất bại');
-      });
+    dispatch(
+      openModal({
+        modalId: CModalIds.usingRoom,
+        modalComponent: <ModalUsingRoom room={room} />,
+      }),
+    );
   };
 
   const handlePayment = () => {
-    // dispatch(
-    //   openModal({
-    //     modalId: CModalIds.usingRoom,
-    //     modalComponent: <ModalUsingRoom roomId={room.id} />,
-    //   }),
-    // );
+    dispatch(
+      openModal({
+        modalId: CModalIds.getPaymentInfo,
+        modalComponent: <ModalPayment room={room} />,
+      }),
+    );
 
-    dispatch(updateRoom({ roomId: room.id, newRoom: { ...room, status: ERoomStatus.FREE } }))
-      .unwrap()
-      .then(() => {
-        setIsLoadingUpdate(false);
-        toastMessage.success('Cập nhật trạng thái thành công');
-      })
-      .catch(() => {
-        setIsLoadingUpdate(false);
-        toastMessage.error('Cập nhật trạng thái thất bại');
-      });
+    // dispatch(updateRoom({ roomId: room.id, newRoom: { ...room, status: ERoomStatus.FREE } }))
+    //   .unwrap()
+    //   .then(() => {
+    //     setIsLoadingUpdate(false);
+    //     toastMessage.success('Cập nhật trạng thái thành công');
+    //   })
+    //   .catch(() => {
+    //     setIsLoadingUpdate(false);
+    //     toastMessage.error('Cập nhật trạng thái thất bại');
+    //   });
   };
 
   const handleViewBooking = (event: React.MouseEvent<HTMLButtonElement>) => {

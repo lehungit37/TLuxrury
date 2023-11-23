@@ -19,6 +19,7 @@ export const CModalIds = {
   deleteRoom: 'delete_room',
 
   usingRoom: 'usingRoom',
+  getPaymentInfo: 'getPaymentInfo',
 
   addBooking: 'add_booking',
 };

@@ -13,7 +13,7 @@ export const findIndexItem = (array: any[], id: string) => {
 };
 
 export const formatDate = (date: string | Date) => {
-  return moment(date).utc().format('DD/MM/YYYY HH:mm:ss');
+  return moment(date).format('DD/MM/YYYY HH:mm:ss');
 };
 
 export const convertMinMaxToArray = (
