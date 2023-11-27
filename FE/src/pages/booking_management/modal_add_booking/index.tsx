@@ -21,10 +21,10 @@ import Step1Booking from './step1';
 import Step2Booking from './step2';
 
 type Props = {
-  asyncGetData: () => void;
+  onAddSuccess: (roomBooking: IRoomBooking) => void;
 };
 
-const ModalAddBooking = ({ asyncGetData }: Props) => {
+const ModalAddBooking = ({ onAddSuccess }: Props) => {
   const handleChangeStep = (newStep: number) => {
     setActiveStep(newStep);
   };
@@ -54,7 +54,7 @@ const ModalAddBooking = ({ asyncGetData }: Props) => {
       title: 'Đặt phòng',
       component: (
         <Step2Booking
-          asyncGetData={asyncGetData}
+          onAddSuccess={onAddSuccess}
           roomWillBooking={roomWillBooking}
           handleChangeStep={handleChangeStep}
         />

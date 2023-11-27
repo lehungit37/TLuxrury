@@ -22,4 +22,6 @@ export const CModalIds = {
   getPaymentInfo: 'getPaymentInfo',
 
   addBooking: 'add_booking',
+
+  update_booking: 'update_booking',
 };

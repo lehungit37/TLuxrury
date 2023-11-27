@@ -14,7 +14,6 @@ export interface IRoomBooking {
 }
 
 export interface IPayloadGetRoomBooking {
-  page: number;
-  limit: number;
-  roomId?: string;
+  startDate: Date;
+  endDate: Date;
 }

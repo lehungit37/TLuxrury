@@ -23,7 +23,7 @@ import * as yup from 'yup';
 type Props = {
   handleChangeStep: (newStep: number) => void;
   roomWillBooking: { roomId: string; fromDate: Date; toDate: Date };
-  asyncGetData: () => void;
+  onAddSuccess: (roomBooking: IRoomBooking) => void;
 };
 
 const schema = yup.object({
@@ -33,7 +33,7 @@ const schema = yup.object({
 });
 
 const Step2Booking = (props: Props) => {
-  const { handleChangeStep, asyncGetData, roomWillBooking } = props;
+  const { handleChangeStep, roomWillBooking, onAddSuccess } = props;
   const dispatch = useAppDispatch();
   const [roomList, setRoomList] = useState<IRoom[]>([]);
   useEffect(() => {
@@ -78,8 +78,9 @@ const Step2Booking = (props: Props) => {
         if (isCanCreate) {
           dispatch(createBooking(data))
             .unwrap()
-            .then(() => {
-              asyncGetData();
+            .then((roomBooking) => {
+              // asyncGetData();
+              onAddSuccess(roomBooking);
               toastMessage.success('Đặt phòng thành công');
               dispatch(closeModal({ modalId: CModalIds.addBooking }));
             })

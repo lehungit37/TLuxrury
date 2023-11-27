@@ -51,7 +51,7 @@ export const roomApi = {
     return client.get(`/room_booking/check_booking?${query}`);
   },
 
-  getRoomBookingManagemnt: (payload: { page: number; limit: number; keyword: string }) => {
+  getRoomBookingManagemnt: (payload: { startDate: Date; endDate: Date }) => {
     const query = qs.stringify(payload);
 
     return client.get(`/room_booking?${query}`);

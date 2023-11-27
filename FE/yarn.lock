@@ -1212,6 +1212,11 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-2.1.1.tgz#c9c61d9fe5ca5ac664e1153bb0aa0eba1c6d6308"
   integrity sha512-jwx+WCqszn53YHOfvFMJJRd/B2GqkCBt+1MJSG6o5/s8+ytHMvDZXsJgUEWLk12UnLd7HYKac4BYU5i/Ron1Cw==
 
+"@date-io/core@^1.3.13":
+  version "1.3.13"
+  resolved "https://registry.yarnpkg.com/@date-io/core/-/core-1.3.13.tgz#90c71da493f20204b7a972929cc5c482d078b3fa"
+  integrity sha512-AlEKV7TxjeK+jxWVKcCFrfYAk8spX9aCyiToFIiLPtfQbsjmRGLIhb5VZgptQcJdHtLXo7+m0DuurwFgUToQuA==
+
 "@date-io/core@^2.15.0", "@date-io/core@^2.16.0":
   version "2.16.0"
   resolved "https://registry.yarnpkg.com/@date-io/core/-/core-2.16.0.tgz#7871bfc1d9bca9aa35ad444a239505589d0f22f6"
@@ -1238,6 +1243,13 @@
   dependencies:
     "@date-io/core" "^2.16.0"
 
+"@date-io/moment@^1.3.11":
+  version "1.3.13"
+  resolved "https://registry.yarnpkg.com/@date-io/moment/-/moment-1.3.13.tgz#56c2772bc4f6675fc6970257e6033e7a7c2960f0"
+  integrity sha512-3kJYusJtQuOIxq6byZlzAHoW/18iExJer9qfRF5DyyzdAk074seTuJfdofjz4RFfTd/Idk8WylOQpWtERqvFuQ==
+  dependencies:
+    "@date-io/core" "^1.3.13"
+
 "@date-io/moment@^2.15.0":
   version "2.16.1"
   resolved "https://registry.yarnpkg.com/@date-io/moment/-/moment-2.16.1.tgz#ec6e0daa486871e0e6412036c6f806842a0eeed4"
@@ -1254,10 +1266,10 @@
     d3-scale "^4.0.2"
     d3-shape "^1.3.7"
 
-"@devexpress/dx-core@4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@devexpress/dx-core/-/dx-core-4.0.3.tgz#f67f251fc94f3f98407480a71dc5833c1a8d149b"
-  integrity sha512-DW8smL7T/NzKTSOuaOR9dpJx51gE9GoS8R2vAIAMFdm0gXGfCb8yhwDbomUuSIMlZ0IxIHzHIXddwJOyQbwLLg==
+"@devexpress/dx-core@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-core/-/dx-core-4.0.6.tgz#5f1f6c77ef3f4b6173be22d5422696c6273f54eb"
+  integrity sha512-UmuL7J4GFSHFMhuiuwcY6hlmDnOozxsRjzrbQ3Qe+O+Tk8lOJwhywVFp28kQV3XJUScuQoVCl4jpLAlu82ctrA==
 
 "@devexpress/dx-react-chart-material-ui@^4.0.0":
   version "4.0.3"
@@ -1276,13 +1288,37 @@
     d3-scale "^4.0.2"
     d3-shape "^1.3.7"
 
-"@devexpress/dx-react-core@^4.0.0":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-core/-/dx-react-core-4.0.3.tgz#36ed3072ecebffd07dbf95da1043570c5160c384"
-  integrity sha512-6Brf+kIoFJrEBCWO5r6DycSMLKB5XfPaOlm+IhaE+0Y60ssPidpk87zxME1EMghMbcuuiM/3r1pku2M5pUCMVw==
+"@devexpress/dx-react-core@^4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-core/-/dx-react-core-4.0.6.tgz#d634f40967025b5e21c0bc93455258c168dd6e9d"
+  integrity sha512-6KtiOL2vM07arRY2nwRiVS9BIzVL7sNWfbJVHK44L37H1z1jsbdlyFxRiu94JU/Gv2iaMKrMqNowGweBCFrqCQ==
   dependencies:
-    "@devexpress/dx-core" "4.0.3"
+    "@devexpress/dx-core" "4.0.6"
     prop-types "^15.7.2"
+
+"@devexpress/dx-react-scheduler-material-ui@^4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-scheduler-material-ui/-/dx-react-scheduler-material-ui-4.0.6.tgz#b906e91657cd7f710460b686957321c84833b25f"
+  integrity sha512-b2oqg24oHco/NdT2tLtgHgnDhZQCifZ88m5AsXcqjFnOEBPrJyR/LfGIbVtnFeIyf6o5YMB+xi3CwGakyZTldQ==
+  dependencies:
+    "@date-io/moment" "^1.3.11"
+    clsx "^1.0.4"
+    prop-types "^15.7.2"
+
+"@devexpress/dx-react-scheduler@^4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-scheduler/-/dx-react-scheduler-4.0.6.tgz#5deb41370d31302723181c7c501be114766d0b50"
+  integrity sha512-SbFeZr1K/fY316lJmqGSfDEUeIfa4C3lsE7iDRH0mrMP36fkgIEv7cTWxrv5JgJ7wSK5kf4mFFyAjhdzS/qjCQ==
+  dependencies:
+    "@devexpress/dx-scheduler-core" "4.0.6"
+
+"@devexpress/dx-scheduler-core@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-scheduler-core/-/dx-scheduler-core-4.0.6.tgz#4d972e0ac2faa450e21dfbfba40a5a0ffaae76da"
+  integrity sha512-p3Vm53unxK/6kQerepiMS5LcJuyzU2yc0qoUiL81YRnj/nZfOor6Oj4oll7IxCyhgIiDGzUimLV+NILGVFGlfg==
+  dependencies:
+    moment "^2.24.0"
+    rrule "2.7.1"
 
 "@devexpress/utils@1.3.16":
   version "1.3.16"
@@ -2546,6 +2582,164 @@
     "@svgr/plugin-jsx" "^5.5.0"
     "@svgr/plugin-svgo" "^5.5.0"
     loader-utils "^2.0.0"
+
+"@syncfusion/ej2-base@~23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-base/-/ej2-base-23.2.4.tgz#f2f245ef0838857a3d2bd2d6ff192759ee0193b6"
+  integrity sha512-TUoZEW1SNVpGBo8AyO9i4JoVES8oSyEkt4OdogYit39yoj+eLv4UVIVtm25Ls1ueg1dtF8TJGQAtnNM+Z2QC0w==
+  dependencies:
+    "@syncfusion/ej2-icons" "~23.2.4"
+
+"@syncfusion/ej2-buttons@~23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-buttons/-/ej2-buttons-23.2.4.tgz#097352b9d519ef510eade69f9ce04000735bac6a"
+  integrity sha512-BOWmD3rNet1xCT4ZdVGJ6vX+yoFOG4kAly3s2RRansZrToaq6CKK5jb6uHdkRTPCF4gIUtsIXQhGJyKxcKK+zQ==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+
+"@syncfusion/ej2-calendars@~23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-calendars/-/ej2-calendars-23.2.4.tgz#b303ea938152479fd2f10e7e6dc6131f1917a24c"
+  integrity sha512-JrNgruszCE8X1zwo6oEoiYMQlZ1GOPlxI9D5D4yJ0q7Lcm6nuvZOSXvjMKQ2Y3xVCTUpb4RaSl1XwLWg3cLEkg==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+    "@syncfusion/ej2-buttons" "~23.2.4"
+    "@syncfusion/ej2-inputs" "~23.2.4"
+    "@syncfusion/ej2-lists" "~23.2.4"
+    "@syncfusion/ej2-popups" "~23.2.4"
+
+"@syncfusion/ej2-compression@~23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-compression/-/ej2-compression-23.2.4.tgz#c36c4c08f271b9bb7ac81a39ac659a1fbeb5c45d"
+  integrity sha512-F7ugnMo/nysFyP6sJGou0/DhIMBF/fCR9FS0Himv0CVxuFXWBIWv3+TdmIVP+8TVGvlA3zmskutJcSdxCM3InA==
+  dependencies:
+    "@syncfusion/ej2-file-utils" "~23.2.4"
+
+"@syncfusion/ej2-data@~23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-data/-/ej2-data-23.2.4.tgz#3873ef82a17ed5dbb8b5c43b90fd650892050da3"
+  integrity sha512-hVTo3pNOXLYgd5Au2E5AMUzeqstbwvqzr68bxgQoJJWjKd/hD3bKOQiPHaPbS8wvKgzs4mQ6rt/OuwoLErXALQ==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+
+"@syncfusion/ej2-dropdowns@~23.2.4":
+  version "23.2.5"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-dropdowns/-/ej2-dropdowns-23.2.5.tgz#2aff5652dd6fcf5dbd514a1be35297567344dd30"
+  integrity sha512-QjOQpqp5V2TBU501GSDxyf21iyydrM99m1yN5OcaW4Pb0tTKaMYtctVwu5WbNZxeV/DoA+kGj+HL0gFKAkPhbA==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+    "@syncfusion/ej2-data" "~23.2.4"
+    "@syncfusion/ej2-inputs" "~23.2.4"
+    "@syncfusion/ej2-lists" "~23.2.4"
+    "@syncfusion/ej2-navigations" "~23.2.5"
+    "@syncfusion/ej2-notifications" "~23.2.5"
+    "@syncfusion/ej2-popups" "~23.2.4"
+
+"@syncfusion/ej2-excel-export@~23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-excel-export/-/ej2-excel-export-23.2.4.tgz#346bf16758a7945d179c166f04b382633a71c5c3"
+  integrity sha512-V9XgASYgqTSRvGRe6gvqBgcLyjW50PbTmr7zvIMgCbSFotmxf+GCMZTLYu5dfiLNm2uHPforoGt7Z9NmtA7e1Q==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+    "@syncfusion/ej2-compression" "~23.2.4"
+
+"@syncfusion/ej2-file-utils@~23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-file-utils/-/ej2-file-utils-23.2.4.tgz#db1bcaac372afe94e1314073d0e858d3e728ea81"
+  integrity sha512-Y05b9ewKbURmd7oe+Yc3kPM+5xH3Q3cAFsqSDTRisHMA6JL0BNM+U43GKj3D239JlXMp/wdZO3lkcxIkHGdyoQ==
+
+"@syncfusion/ej2-icons@~23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-icons/-/ej2-icons-23.2.4.tgz#c4a9a3e24505150d35bec4e4548f172ee9929710"
+  integrity sha512-uWQ0RoFNw85jVn3LvRn2pcsW22aajJ5jQ8CP3Kn98lTbtHag+XL4b3qVkCzPDbgXGMPyc+IUuHz4JXly+wcv2Q==
+
+"@syncfusion/ej2-inputs@~23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-inputs/-/ej2-inputs-23.2.4.tgz#e93873507b8aa298b61cdf04583f889b9e331ecf"
+  integrity sha512-GfMuQAHy7spiJxN8nyJLqqXqFeZXxMa5t1/x3fKXj1NkmIFDkWzCmPmhiclZh1zr4PtflK6m/EKDyirUSdTv3g==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+    "@syncfusion/ej2-buttons" "~23.2.4"
+    "@syncfusion/ej2-popups" "~23.2.4"
+    "@syncfusion/ej2-splitbuttons" "~23.2.4"
+
+"@syncfusion/ej2-lists@~23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-lists/-/ej2-lists-23.2.4.tgz#42d779b74918fecd7076d97a20108860d7425d8f"
+  integrity sha512-sBH/BRqUftRl+k8tF16aVX+9UD6ECoNPxLh4BRRXCuqw+VzKCyb9xVBLdqLjcU/3JLCHX9tc3X3OFtTMtk3nNw==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+    "@syncfusion/ej2-buttons" "~23.2.4"
+    "@syncfusion/ej2-data" "~23.2.4"
+
+"@syncfusion/ej2-navigations@~23.2.4", "@syncfusion/ej2-navigations@~23.2.5":
+  version "23.2.5"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-navigations/-/ej2-navigations-23.2.5.tgz#db1bd1a4f36cf4f07448bdd67e87cea1aa5a2389"
+  integrity sha512-2n8gaMrmlCNIoZ4yP3u1ETFrdsa28pEPl5zNRsNDQXI0LBYU2P213hf5rvagXyTV/GP4fp0g6oo7Filz/GLdtg==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+    "@syncfusion/ej2-buttons" "~23.2.4"
+    "@syncfusion/ej2-data" "~23.2.4"
+    "@syncfusion/ej2-inputs" "~23.2.4"
+    "@syncfusion/ej2-lists" "~23.2.4"
+    "@syncfusion/ej2-popups" "~23.2.4"
+
+"@syncfusion/ej2-notifications@~23.2.5":
+  version "23.2.5"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-notifications/-/ej2-notifications-23.2.5.tgz#96919caf6b7d7feac65903643ebcf7a1aeff5c08"
+  integrity sha512-sS4/qEgwshXB+Qj8emFJHIxgP2VxPpGpq71UU9l4GdIJ1iaDvtSEJAVp8Cxz7i84onmJgXtPj52fsTcD8Z/GoQ==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+    "@syncfusion/ej2-buttons" "~23.2.4"
+    "@syncfusion/ej2-popups" "~23.2.4"
+
+"@syncfusion/ej2-popups@~23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-popups/-/ej2-popups-23.2.4.tgz#0a1a509b208fccd36c7911292bf57e49bb19a1fd"
+  integrity sha512-ONq3Wf2BKA0u/i6P039nB6GC9/Lh0pIRlYyWj55/A8+4Ct4CVVu/fIDbuQeK+Y2HPAmS+aBhMCPbROl0eicrjw==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+    "@syncfusion/ej2-buttons" "~23.2.4"
+
+"@syncfusion/ej2-react-base@~23.2.4":
+  version "23.2.5"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-react-base/-/ej2-react-base-23.2.5.tgz#19624aa2578f3dd6367c03adae2cb9257a1f29f1"
+  integrity sha512-mWcVTHxouoEwahqNY7qRU+z28pZrFefQ3XEi4P+8u/LMr8N+JJtXhb3Xo4VNTLErK5IYaMQcA4IVEQjvITDR8Q==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+
+"@syncfusion/ej2-react-schedule@^23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-react-schedule/-/ej2-react-schedule-23.2.4.tgz#9641dc74f0e12ac8b10bbfbb168f835ab20954fd"
+  integrity sha512-MUPXAJ6sjVQkHMCsBrRQlrIsO7xCH6sY2nMmoKkoIpZANZBKAHc1rACIYCWwTDW8gNL1qMmJ1hgH+wDZEpY79g==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+    "@syncfusion/ej2-react-base" "~23.2.4"
+    "@syncfusion/ej2-schedule" "23.2.4"
+
+"@syncfusion/ej2-schedule@23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-schedule/-/ej2-schedule-23.2.4.tgz#4263fc45600e933bc04084c932a56b7f638b95e9"
+  integrity sha512-w7qm2eBkEOIzTfUeOi1vfSjUGDfRaqQpp+mqbAonUrD/rA3QAl4CZ2L+NxmWK5z39BddCPiaHeCp9M23RY0Rjw==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+    "@syncfusion/ej2-buttons" "~23.2.4"
+    "@syncfusion/ej2-calendars" "~23.2.4"
+    "@syncfusion/ej2-data" "~23.2.4"
+    "@syncfusion/ej2-dropdowns" "~23.2.4"
+    "@syncfusion/ej2-excel-export" "~23.2.4"
+    "@syncfusion/ej2-inputs" "~23.2.4"
+    "@syncfusion/ej2-lists" "~23.2.4"
+    "@syncfusion/ej2-navigations" "~23.2.4"
+    "@syncfusion/ej2-popups" "~23.2.4"
+
+"@syncfusion/ej2-splitbuttons@~23.2.4":
+  version "23.2.4"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-splitbuttons/-/ej2-splitbuttons-23.2.4.tgz#af74faa11520a43ac1fdf7a9748dc7e97f76d6b5"
+  integrity sha512-e94DT1lfy671RUkt4A+xnYSW2Ug6rPRnircS29A3c8gqEtTghOUc0929Be7cDviIUVkvg+/oYAfgGfcS6s5pzA==
+  dependencies:
+    "@syncfusion/ej2-base" "~23.2.4"
+    "@syncfusion/ej2-popups" "~23.2.4"
 
 "@tanstack/query-core@4.26.1":
   version "4.26.1"
@@ -8755,7 +8949,7 @@ mkdirp@~0.5.1:
   dependencies:
     minimist "^1.2.6"
 
-moment@^2.10.2, moment@^2.29.4:
+moment@^2.10.2, moment@^2.24.0, moment@^2.29.4:
   version "2.29.4"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
@@ -10974,6 +11168,13 @@ rollup@^2.43.1:
   integrity sha512-uKxbd0IhMZOhjAiD5oAFp7BqvkA4Dv47qpOCtaNvng4HBwdbWtdOh8f5nZNuk2rp51PMGk3bzfWu5oayNEuYnw==
   optionalDependencies:
     fsevents "~2.3.2"
+
+rrule@2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/rrule/-/rrule-2.7.1.tgz#2511e1aed0e96fb5acf831304cde97d2cb65d99e"
+  integrity sha512-4p20u/1U7WqR3Nb1hOUrm0u1nSI7sO93ZUVZEZ5HeF6Gr5OlJuyhwEGRvUHq8ZfrPsq5gfa5b9dqnUs/kPqpIw==
+  dependencies:
+    tslib "^2.4.0"
 
 rrule@^2.7.1:
   version "2.7.2"

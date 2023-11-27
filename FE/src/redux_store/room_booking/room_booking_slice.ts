@@ -4,25 +4,19 @@ import { IPayloadGetRoomBooking, IRoomBooking } from 'src/types/roomBooking';
 import { getRoomBookingManagemnt } from './room_booking_actions';
 
 interface IRoomSlice {
-  roomBookingData: {
-    data: IRoomBooking[];
-    totalData: number;
-  };
+  roomBookingData: IRoomBooking[];
+
   roomBookingIdSelected: string;
   roomBooking: IRoomBooking;
   payload: IPayloadGetRoomBooking;
 }
 
 const initialState: IRoomSlice = {
-  roomBookingData: {
-    data: [],
-    totalData: 0,
-  },
+  roomBookingData: [],
 
   payload: {
-    page: 1,
-    roomId: '',
-    limit: 16,
+    startDate: new Date(),
+    endDate: new Date(),
   },
 
   roomBookingIdSelected: '',

@@ -3,6 +3,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import Routes from './routes';
 import ModalController from './components/modal';
+import './App.css';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';

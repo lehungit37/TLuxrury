@@ -13,6 +13,7 @@ import emptyDataImage from 'src/assets/images/empty_data.jpeg';
 import { toastMessage } from 'src/utils/toast';
 import { useIsRequestPending } from 'src/hooks';
 import Loading from 'src/components/loading';
+import moment from 'moment';
 
 type Props = {
   handleChangeStep: (newStep: number) => void;
@@ -29,7 +30,7 @@ const Step1Booking = (props: Props) => {
   const { control, getValues } = useForm({
     defaultValues: {
       fromDate: new Date(),
-      toDate: new Date(),
+      toDate: new Date(moment().add(1, 'day').toString()),
     },
   });
 
@@ -145,7 +146,7 @@ const Step1Booking = (props: Props) => {
                 })
               ) : (
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <img src={emptyDataImage} />
+                  <img style={{ width: '100%' }} src={emptyDataImage} />
                 </Box>
               )}
             </Grid>

@@ -25,7 +25,7 @@ type Props = {
 function TableData(props: Props) {
   const { asyncGetData } = props;
   const {
-    roomBookingData: { data },
+    // roomBookingData: { data },
     // roomIdSelected,
   } = useAppSelector((state) => state.roomBookingSlice);
 
@@ -183,12 +183,7 @@ function TableData(props: Props) {
   ];
 
   return (
-    <ReactTable<IRoomBooking>
-      data={data || []}
-      columns={columns}
-      isLoading={isLoading}
-      size="medium"
-    />
+    <ReactTable<IRoomBooking> data={[]} columns={columns} isLoading={isLoading} size="medium" />
   );
 }
 

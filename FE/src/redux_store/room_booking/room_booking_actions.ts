@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { roomApi } from 'src/clients/http/room_client';
 import { IRoomBooking } from 'src/types/roomBooking';
 
-export const createBooking = createAsyncThunk<void, IRoomBooking>(
+export const createBooking = createAsyncThunk<IRoomBooking, IRoomBooking>(
   'room/createBooking',
   async (payload, { rejectWithValue }) => {
     try {
@@ -25,8 +25,8 @@ export const checkCanCreateBooking = createAsyncThunk<
   }
 });
 export const getRoomBookingManagemnt = createAsyncThunk<
-  { data: IRoomBooking[]; totalData: number },
-  { page: number; limit: number; keyword: string }
+  IRoomBooking[],
+  { startDate: Date; endDate: Date }
 >('room/getRoomBookingManagemnt', async (payload, { rejectWithValue }) => {
   try {
     const { data } = await roomApi.getRoomBookingManagemnt(payload);
