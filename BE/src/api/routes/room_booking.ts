@@ -16,13 +16,13 @@ const createBooking = async (
 ) => {
   try {
     const data = req.body;
-    await new RoomBookingApp().createBooking({
+    const booking = await new RoomBookingApp().createBooking({
       ...data,
       timeBooking: new Date(),
       userBooking: "65426946dbb750f5f52f5fa6",
     });
 
-    res.json("Ok");
+    res.json(booking);
   } catch (error) {
     next(error);
   }
@@ -55,9 +55,8 @@ const getListRoomBooking = async (
   try {
     const payload: any = req.query;
     const data = await new RoomBookingApp().getRoomBookingManagent({
-      page: Number(payload.page),
-      limit: Number(payload.limit),
-      keyword: payload.keyword,
+      startDate: new Date(payload.startDate),
+      endDate: new Date(payload.endDate),
     });
 
     res.json(data);

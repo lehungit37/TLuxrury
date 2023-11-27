@@ -21,7 +21,7 @@ export const checkAuthorization = async (
 
     const session = await new SessionApp().getSession(token);
 
-    const userId = session?.id?.toString();
+    const userId = session?.userId?.toString();
 
     req.headers.user_id = userId;
 

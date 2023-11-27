@@ -2,19 +2,58 @@ import { Db, ObjectId } from "mongodb";
 import { IRoomBooking } from "../../interface/booking";
 import { BaseStore } from "./base_store";
 
+const project = {
+  _id: 0,
+  id: "$_id",
+  customerName: 1,
+  customerPhone: 1,
+  roomId: 1,
+  room: 1,
+  isVerified: 1,
+  timeBooking: 1,
+  fromDate: 1,
+  toDate: 1,
+};
+
 export class RoomBookingStore extends BaseStore {
   constructor(db: Db) {
     super(db, "RoomBookings");
   }
 
   async createBooking(data: IRoomBooking) {
-    return this.collection.insertOne({
+    const result = this.collection.insertOne({
       ...data,
       roomId: new ObjectId(data.roomId),
       fromDate: new Date(data.fromDate),
       toDate: new Date(data.toDate),
       isVerified: false,
     });
+
+    return (await result).insertedId.toString();
+  }
+  async getById(id: string) {
+    const result = await this.collection
+      .aggregate<IRoomBooking>([
+        { $match: { _id: new ObjectId(id) } },
+
+        {
+          $lookup: {
+            from: "Rooms",
+            localField: "roomId",
+            foreignField: "_id",
+            as: "room",
+          },
+        },
+        {
+          $unwind: "$room",
+        },
+        {
+          $project: project,
+        },
+      ])
+      .toArray();
+
+    return result[0];
   }
 
   async checkBooking({
@@ -101,15 +140,57 @@ export class RoomBookingStore extends BaseStore {
     return result;
   }
 
-  async getListRoomBooking(query: {
-    page: number;
-    keyword: string;
-    limit: number;
-  }) {
-    const { dataQuery } = this.filterCondition(query);
-
+  async getListRoomBooking(query: { startDate: Date; endDate: Date }) {
+    const { startDate, endDate } = query;
     const result = await this.collection
-      .aggregate<IRoomBooking>(dataQuery)
+      .aggregate<IRoomBooking>([
+        {
+          $match: {
+            $or: [
+              {
+                fromDate: {
+                  $gte: new Date(startDate),
+                  $lte: new Date(endDate),
+                },
+                toDate: {
+                  $gte: new Date(endDate),
+                },
+              },
+              {
+                fromDate: {
+                  $gte: new Date(startDate),
+                },
+                toDate: {
+                  $lte: new Date(endDate),
+                },
+              },
+              {
+                fromDate: {
+                  $lte: new Date(startDate),
+                },
+                toDate: {
+                  $gte: new Date(startDate),
+                  $lte: new Date(endDate),
+                },
+              },
+            ],
+          },
+        },
+        {
+          $lookup: {
+            from: "Rooms",
+            localField: "roomId",
+            foreignField: "_id",
+            as: "room",
+          },
+        },
+        {
+          $unwind: "$room",
+        },
+        {
+          $project: project,
+        },
+      ])
       .toArray();
     return result;
   }

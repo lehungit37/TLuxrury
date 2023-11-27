@@ -6,7 +6,7 @@ import { StatusCodes } from "http-status-codes";
 export class RoomBookingApp {
   constructor() {}
   async createBooking(data: IRoomBooking) {
-    await store
+    const id = await store
       .roomBookingStore()
       .createBooking(data)
       .catch((error) => {
@@ -16,7 +16,9 @@ export class RoomBookingApp {
           StatusCodes.INTERNAL_SERVER_ERROR
         );
       });
-    return "OK";
+
+    const booking = await store.roomBookingStore().getById(id);
+    return booking;
   }
 
   async checkBooking(payload: {
@@ -39,18 +41,10 @@ export class RoomBookingApp {
     return false;
   }
 
-  async getRoomBookingManagent(payload: {
-    page: number;
-    limit: number;
-    keyword: string;
-  }) {
-    const totalData = await store
-      .roomBookingStore()
-      .countRoomBookingList(payload);
-
+  async getRoomBookingManagent(payload: { startDate: Date; endDate: Date }) {
     const data = await store.roomBookingStore().getListRoomBooking(payload);
 
-    return { data, totalData };
+    return data;
   }
 
   async delete(id: string) {

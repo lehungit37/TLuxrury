@@ -19,6 +19,7 @@ import { LoginApp } from "../../app/login";
 import { SessionApp } from "../../app/session";
 import { isValidAuth, isValidId } from "../../util/request";
 import { validateLoginPayload, validateId } from "../../util/validate";
+import { checkAuthorization } from "../middleware/authorization";
 
 export const userRouter = (router: IRouter) => {
   // router.post('/users/login/google', loginByGoogle);
@@ -36,15 +37,15 @@ export const userRouter = (router: IRouter) => {
 
     sendActiveEmail
   );
-  router.put("/users/:userId/password", updateUserPassword);
-  router.put("/users/me/change_pass", updateMyPassword);
-  router.put("/users/me/change_phone", updateMyPhoneNumber);
-  router.put("/users/:userId", updateUser);
+  router.put("/users/:userId/password", checkAuthorization, updateUserPassword);
+  router.put("/users/me/change_pass", checkAuthorization, updateMyPassword);
+  router.put("/users/me/change_phone", checkAuthorization, updateMyPhoneNumber);
+  router.put("/users/:userId", checkAuthorization, updateUser);
 
-  router.delete("/users/:userId", deleteUser);
+  router.delete("/users/:userId", checkAuthorization, deleteUser);
 
-  router.get("/users/me", getMe);
-  router.get("/users/getMe", getMe);
+  router.get("/users/me", checkAuthorization, getMe);
+  router.get("/users/getMe", checkAuthorization, getMe);
   router.get("/users/forgot_password", receiveEmailForgotPassword);
   router.get("/users/checkEmail", checkExistEmail);
   router.get("/users/:userId/sessions", getSessions);
@@ -157,8 +158,11 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
 
 const getMe = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // const userId = req.headers.user_id;
-    const userId = "65426946dbb750f5f52f5fa6";
+    const userId = req.headers.user_id;
+
+    console.log(userId);
+
+    // const userId = "65426946dbb750f5f52f5fa6";
 
     if (!userId) {
       throw new AppError(
@@ -451,7 +455,7 @@ const checkPermissionAndGetRoleUser = async (
   req: Request,
   permissionName: string
 ): Promise<{ userId: string; level: number }> => {
-  // const user_id = req.headers.user_id;
+  const user_id = req.headers.user_id as string;
   // const token = req.headers.authorization || "";
   // const [error, role] = await to(
   //   new AuthenticationApp().checkPermissionUser(
@@ -462,7 +466,7 @@ const checkPermissionAndGetRoleUser = async (
   // );
   // if (!_.isEmpty(error)) throw error;
   // return { userId: user_id as string, level: role?.level || 0 };
-  return { userId: "65426946dbb750f5f52f5fa6", level: 0 };
+  return { userId: user_id, level: 0 };
 };
 
 const receiveEmailForgotPassword = async (
