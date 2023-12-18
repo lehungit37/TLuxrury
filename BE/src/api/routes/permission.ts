@@ -3,9 +3,14 @@ import { PermissionSchemesApp } from "../../app/permission_schemes";
 import { IRouter, NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { AppError } from "../../models/util";
+import { checkAuthorization } from "../middleware/authorization";
 
 export const permissionRouter = (router: IRouter) => {
-  router.get("/permissions/:privateLevel", getPermissionByPrivateLevel);
+  router.get(
+    "/permissions/:privateLevel",
+    checkAuthorization,
+    getPermissionByPrivateLevel
+  );
 };
 
 const getPermissionByPrivateLevel = async (

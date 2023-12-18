@@ -14,6 +14,7 @@ import ConfirmationDialog from 'src/components/modal/confirm_dialog';
 import DialogWrapper from 'src/components/modal/dialog_wrapper';
 import { CModalIds } from 'src/constants';
 import { useAppDispatch } from 'src/hooks';
+import ModalUsingRoom from 'src/pages/home/modal_using';
 import { closeModal, openModal } from 'src/redux_store/common/modal_slice';
 import { deleteRoomBooking } from 'src/redux_store/room_booking/room_booking_actions';
 import theme from 'src/theme';
@@ -27,11 +28,13 @@ type Props = {
 const RoomBookingInfo = ({ data, onDeleteSuccess }: Props) => {
   const dispatch = useAppDispatch();
 
-  const handleDeleteBooking = () => {
+  const handleDeleteBooking = (showMessage?: boolean) => {
     dispatch(deleteRoomBooking(data.id))
       .unwrap()
       .then(() => {
-        toastMessage.success('Xoá đặt phòng thành công');
+        if (showMessage) {
+          toastMessage.success('Xoá đặt phòng thành công');
+        }
 
         onDeleteSuccess(data.id);
         dispatch(
@@ -47,7 +50,9 @@ const RoomBookingInfo = ({ data, onDeleteSuccess }: Props) => {
         );
       })
       .catch((error) => {
-        toastMessage.error(error.message || 'Xoá đặt phòng thành công');
+        if (showMessage) {
+          toastMessage.error(error.message || 'Xoá đặt phòng thành công');
+        }
       });
   };
 
@@ -62,6 +67,24 @@ const RoomBookingInfo = ({ data, onDeleteSuccess }: Props) => {
             sliceName="rooms"
             functionName="deleteBooking"
             callback={handleDeleteBooking}
+          />
+        ),
+      }),
+    );
+  };
+
+  const handleUsingRoom = () => {
+    const roomId = data.roomId;
+
+    dispatch(
+      openModal({
+        modalId: CModalIds.usingRoom,
+        modalComponent: (
+          <ModalUsingRoom
+            callback={() => handleDeleteBooking(false)}
+            room={{ id: roomId }}
+            defaultForm={{ customerName: data.title, customerPhone: data.customerPhone }}
+            isDisabled={true}
           />
         ),
       }),
@@ -125,7 +148,11 @@ const RoomBookingInfo = ({ data, onDeleteSuccess }: Props) => {
 
         <Grid container columnSpacing={1} mt={3}>
           <Grid item>
-            <LoadingButton startIcon={<LoginOutlined />} variant="contained">
+            <LoadingButton
+              onClick={handleUsingRoom}
+              startIcon={<LoginOutlined />}
+              variant="contained"
+            >
               Nhận phòng
             </LoadingButton>
           </Grid>

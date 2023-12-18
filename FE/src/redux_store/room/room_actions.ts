@@ -4,6 +4,7 @@ import { roomApi } from 'src/clients/http/room_client';
 import { IGetRoom, IPayloadGetRooms, IRoom, IRoomType } from 'src/types/room';
 import { toastMessage } from 'src/utils/toast';
 import saveAs from 'file-saver';
+import { IRoomBooking } from 'src/types/roomBooking';
 
 export const getRoomTypes = createAsyncThunk<IRoomType[]>(
   'room/getRoomTypes',
@@ -64,7 +65,7 @@ export const deleteRoom = createAsyncThunk<any, string>(
   },
 );
 
-export const updateRoom = createAsyncThunk<IRoom, { roomId: string; newRoom: IRoom }>(
+export const updateRoom = createAsyncThunk<IRoom, { roomId: string; newRoom: any }>(
   'room/updateRoom',
   async (payload, { rejectWithValue }) => {
     try {
@@ -160,6 +161,22 @@ export const exportExcel = createAsyncThunk<any, any>(
       const filename = data?.headers?.['content-disposition'] || 'download.xls';
 
       saveAs(blob, filename);
+      return data;
+    } catch (error: any) {
+      if (error) {
+        toastMessage.error(error?.message);
+      }
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const getRoomBookingByRoomId = createAsyncThunk<any, string>(
+  'room/getRoomBookingByRoomId',
+  async (roomId, { rejectWithValue }) => {
+    try {
+      const { data } = await roomApi.getRoomBookingByRoomId(roomId);
+
       return data;
     } catch (error: any) {
       if (error) {

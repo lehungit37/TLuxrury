@@ -1,14 +1,44 @@
 import { IRouter, NextFunction, Request, Response } from "express";
 import moment from "moment";
 import { InvoiceApp } from "../../app/invoice";
+import { EPermission } from "../../interface/enum";
+import {
+  checkAuthorization,
+  checkPermission,
+} from "../middleware/authorization";
 
 export const invoiceRouter = (router: IRouter) => {
-  router.get("/invoices/create_payment/:roomId", createPayment);
-  router.get("/invoices/statistical", getStatistical);
-  router.post("/invoices/statistical/exportReport", reportStatisticalExcel);
-  router.post("/invoices", createInvoice);
+  router.get(
+    "/invoices/create_payment/:roomId",
+    checkAuthorization,
+    checkPermission(EPermission.PAYMENT),
+    createPayment
+  );
+  router.get(
+    "/invoices/statistical",
+    checkAuthorization,
+    checkPermission(EPermission.VIEW_REVENUE),
+    getStatistical
+  );
+  router.post(
+    "/invoices/statistical/exportReport",
+    checkAuthorization,
+    checkPermission(EPermission.EXPORT_INVOICE),
+    reportStatisticalExcel
+  );
+  router.post(
+    "/invoices",
+    checkAuthorization,
+    checkPermission(EPermission.VIEW_REVENUE),
+    createInvoice
+  );
 
-  router.put("/invoices/:invoiceId/paided", invoicePaided);
+  router.put(
+    "/invoices/:invoiceId/paided",
+    checkAuthorization,
+    checkPermission(EPermission.VIEW_REVENUE),
+    invoicePaided
+  );
 };
 
 const createInvoice = async (
@@ -67,8 +97,6 @@ const getStatistical = async (
   try {
     const payload = req.query;
 
-    console.log(payload);
-
     const result = await new InvoiceApp().getStatistical({
       startDate: new Date(payload.startDate as string),
       endDate: new Date(payload.endDate as string),
@@ -107,7 +135,7 @@ const reportStatisticalExcel = async (
     );
 
     workbook.xlsx.write(res).then(() => {
-      res.status(200).end();
+      res.status(200);
     });
   } catch (error) {
     next(error);

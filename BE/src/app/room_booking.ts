@@ -78,4 +78,9 @@ export class RoomBookingApp {
 
     return;
   }
+  async getByRoomId(roomId: string) {
+    const result = await store.roomBookingStore().getByRoomId(roomId);
+
+    return result || [];
+  }
 }

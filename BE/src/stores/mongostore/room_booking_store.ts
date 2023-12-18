@@ -276,11 +276,29 @@ export class RoomBookingStore extends BaseStore {
   };
 
   update = async (id: string, data: IRoomBooking) => {
-    console.log({ id, data });
-
     await this.collection.updateOne(
       { _id: new ObjectId(id) },
       { $set: { ...data } }
     );
+  };
+
+  getByRoomId = async (roomId: string) => {
+    const result = await this.collection
+      .find(
+        { roomId: new ObjectId(roomId) },
+        {
+          projection: {
+            customerName: 1,
+            customerPhone: 1,
+            fromDate: 1,
+            toDate: 1,
+            _id: 0,
+            id: "$_id",
+          },
+        }
+      )
+      .toArray();
+
+    return result;
   };
 }

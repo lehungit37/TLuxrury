@@ -1,12 +1,42 @@
 import { IRouter, NextFunction, Request, Response } from "express";
 import { RoomBookingApp } from "../../app/room_booking";
+import { EPermission } from "../../interface/enum";
+import {
+  checkAuthorization,
+  checkPermission,
+} from "../middleware/authorization";
 
 export const roomBookingRouter = (router: IRouter) => {
-  router.post("/room_booking", createBooking);
-  router.get("/room_booking/check_booking", checkBooking);
-  router.get("/room_booking", getListRoomBooking);
-  router.delete("/room_booking/:id", deleteBooking);
-  router.put("/room_booking/:id", updateBooking);
+  router.post(
+    "/room_booking",
+    checkAuthorization,
+    checkPermission(EPermission.ADD_BOOKING),
+    createBooking
+  );
+  router.get(
+    "/room_booking/check_booking",
+    checkAuthorization,
+    checkPermission(EPermission.GET_LIST_BOOKING),
+    checkBooking
+  );
+  router.get(
+    "/room_booking",
+    checkAuthorization,
+    checkPermission(EPermission.GET_LIST_BOOKING),
+    getListRoomBooking
+  );
+  router.delete(
+    "/room_booking/:id",
+    checkAuthorization,
+    checkPermission(EPermission.DELETE_BOOKING),
+    deleteBooking
+  );
+  router.put(
+    "/room_booking/:id",
+    checkAuthorization,
+    checkPermission(EPermission.UPDATE_BOOKING),
+    updateBooking
+  );
 };
 
 const createBooking = async (
@@ -16,10 +46,11 @@ const createBooking = async (
 ) => {
   try {
     const data = req.body;
+    const userId = req.headers.user_id || "";
     const booking = await new RoomBookingApp().createBooking({
       ...data,
       timeBooking: new Date(),
-      userBooking: "65426946dbb750f5f52f5fa6",
+      userBooking: userId,
     });
 
     res.json(booking);

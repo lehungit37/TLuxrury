@@ -1,13 +1,27 @@
-import { HourglassEmptyOutlined } from '@mui/icons-material';
+import {
+  DeleteOutlined,
+  HourglassEmptyOutlined,
+  Login,
+  LoginOutlined,
+  LogoutOutlined,
+} from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Badge, Box, Button, Grid, IconButton, Popover, Typography } from '@mui/material';
+import { Badge, Box, Button, Divider, Grid, IconButton, Popover, Typography } from '@mui/material';
+import moment from 'moment';
 import React, { useState } from 'react';
+import Scrollbars from 'react-custom-scrollbars-2';
+import ConfirmationDialog from 'src/components/modal/confirm_dialog';
+import IconButtonTooltip from 'src/components/tooltip/icon_button_tooltip';
 import { CModalIds } from 'src/constants';
 import { useAppDispatch } from 'src/hooks';
-import { openModal } from 'src/redux_store/common/modal_slice';
-import { updateRoom } from 'src/redux_store/room/room_actions';
+import RoomBookingInfo from 'src/pages/booking_management/calendar_v2/info';
+import { closeModal, openModal } from 'src/redux_store/common/modal_slice';
+import { getRoomBookingByRoomId, updateRoom } from 'src/redux_store/room/room_actions';
+import { updateTotalBooking } from 'src/redux_store/room/room_slice';
+import { deleteRoomBooking } from 'src/redux_store/room_booking/room_booking_actions';
 import theme from 'src/theme';
 import { ERoomStatus, IRoom } from 'src/types/room';
+import { IRoomBooking } from 'src/types/roomBooking';
 import { formatNumberToVND } from 'src/utils/function';
 import { renderColorRoom, renderColorRoomChip, renderRoomStatus } from 'src/utils/room';
 import { toastMessage } from 'src/utils/toast';
@@ -23,6 +37,7 @@ const RoomItem = (props: Props) => {
 
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const [roomBookings, setRoomBookings] = useState<IRoomBooking[]>([]);
 
   const [isLoadingUpdate, setIsLoadingUpdate] = useState<boolean>(false);
 
@@ -34,14 +49,36 @@ const RoomItem = (props: Props) => {
     setAnchorEl(null);
   };
 
+  const handleGetRoomBooking = () => {
+    if (!room.totalBooking) return;
+    dispatch(getRoomBookingByRoomId(room.id))
+      .unwrap()
+      .then((data) => {
+        console.log(data);
+
+        setRoomBookings(data);
+      });
+  };
+
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
-  const handleUsingRoom = () => {
+  const handleUsingRoom = (
+    defaultForm: { customerPhone: string; customerName: string },
+    isDisabled: boolean,
+    callback?: () => void,
+  ) => {
     dispatch(
       openModal({
         modalId: CModalIds.usingRoom,
-        modalComponent: <ModalUsingRoom room={room} />,
+        modalComponent: (
+          <ModalUsingRoom
+            callback={callback}
+            room={room}
+            defaultForm={defaultForm}
+            isDisabled={isDisabled}
+          />
+        ),
       }),
     );
   };
@@ -53,21 +90,32 @@ const RoomItem = (props: Props) => {
         modalComponent: <ModalPayment room={room} />,
       }),
     );
-
-    // dispatch(updateRoom({ roomId: room.id, newRoom: { ...room, status: ERoomStatus.FREE } }))
-    //   .unwrap()
-    //   .then(() => {
-    //     setIsLoadingUpdate(false);
-    //     toastMessage.success('Cập nhật trạng thái thành công');
-    //   })
-    //   .catch(() => {
-    //     setIsLoadingUpdate(false);
-    //     toastMessage.error('Cập nhật trạng thái thất bại');
-    //   });
   };
 
   const handleViewBooking = (event: React.MouseEvent<HTMLButtonElement>) => {
     handleClick(event);
+    handleGetRoomBooking();
+  };
+
+  const handleDeleteBooking = (roomBookingId: string, isShowMessage?: boolean) => {
+    dispatch(deleteRoomBooking(roomBookingId))
+      .unwrap()
+      .then(() => {
+        if (isShowMessage) {
+          toastMessage.success('Xoá đặt phòng thành công');
+        }
+        const currentData = [...roomBookings].filter((item) => item.id !== roomBookingId);
+        setRoomBookings(currentData);
+        dispatch(updateTotalBooking({ roomId: room.id, newTotalBooking: room.totalBooking - 1 }));
+        dispatch(
+          closeModal({
+            modalId: 'deleteBooking',
+          }),
+        );
+      })
+      .catch((error) => {
+        toastMessage.error(error.message || 'Xoá đặt phòng thành công');
+      });
   };
 
   const handleMaintenance = () => {
@@ -83,6 +131,137 @@ const RoomItem = (props: Props) => {
         setIsLoadingUpdate(false);
         toastMessage.error('Cập nhật trạng thái thất bại');
       });
+  };
+
+  const handleOpenModalDeleteBooking = (roomBookingId: string) => {
+    dispatch(
+      openModal({
+        modalId: 'deleteBooking',
+        modalComponent: (
+          <ConfirmationDialog
+            modalId="deleteBooking"
+            describe="Bạn có muốn xoá lượt đặt phòng này không ?"
+            sliceName="rooms"
+            functionName="deleteBooking"
+            callback={() => handleDeleteBooking(roomBookingId, true)}
+          />
+        ),
+      }),
+    );
+  };
+
+  const renderListRoomBooking = () => {
+    if (!roomBookings.length)
+      return (
+        <Box p={2}>
+          <Typography>Không có lượt đặt phòng nào</Typography>
+        </Box>
+      );
+
+    return (
+      <Box width={400} minHeight={200} height={200} maxHeight={500}>
+        <Scrollbars>
+          <Grid p={2} container flexDirection="column">
+            {roomBookings.map((roomItem) => {
+              return (
+                <>
+                  <Grid item key={roomItem.id}>
+                    <Grid container>
+                      <Grid item flex={1}>
+                        <Box sx={{ display: 'flex' }}>
+                          <Box
+                            sx={{
+                              width: '30px',
+                              height: '30px',
+                              borderRadius: '50%',
+                              backgroundColor: theme.palette.primary.main,
+                              mr: 2,
+                              mt: 1,
+                            }}
+                          ></Box>
+
+                          <Box>
+                            <Typography fontWeight="bold" variant="h5">
+                              {roomItem.customerName}
+                            </Typography>
+                            <Typography fontWeight="bold">{roomItem.customerPhone}</Typography>
+                          </Box>
+                        </Box>
+
+                        <Box display={'flex'} sx={{ alignItems: 'center' }} mt={1}>
+                          <Box
+                            sx={{
+                              width: '30px',
+                              height: '30px',
+                              mr: 2,
+                            }}
+                          >
+                            <LoginOutlined />
+                          </Box>
+                          <Box>
+                            <Typography fontWeight="bold">
+                              Nhận phòng: {moment(roomItem.fromDate).format('YYYY-MM-DD HH:mm')}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Box display={'flex'} sx={{ alignItems: 'center' }} mt={1}>
+                          <Box
+                            sx={{
+                              width: '30px',
+                              height: '30px',
+                              mr: 2,
+                            }}
+                          >
+                            <LogoutOutlined />
+                          </Box>
+                          <Box>
+                            <Typography fontWeight="bold">
+                              Trả phòng: {moment(roomItem.toDate).format('YYYY-MM-DD HH:mm')}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Grid>
+                      <Grid item>
+                        <Grid container>
+                          <Grid item>
+                            <IconButtonTooltip
+                              color="success"
+                              title="Nhận phòng"
+                              disabled={room.status !== ERoomStatus.FREE}
+                              onClick={() =>
+                                handleUsingRoom(
+                                  {
+                                    customerName: roomItem.customerName,
+                                    customerPhone: roomItem.customerPhone,
+                                  },
+                                  true,
+                                  () => handleDeleteBooking(roomItem.id, false),
+                                )
+                              }
+                              icon={<LoginOutlined />}
+                            />
+                          </Grid>
+                          <Grid item>
+                            <IconButtonTooltip
+                              color="error"
+                              onClick={() => handleOpenModalDeleteBooking(roomItem.id)}
+                              title="Xoá đặt phòng"
+                              icon={<DeleteOutlined />}
+                            />
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+
+                  <Divider />
+                </>
+              );
+            })}
+          </Grid>
+        </Scrollbars>
+      </Box>
+    );
   };
 
   return (
@@ -125,9 +304,7 @@ const RoomItem = (props: Props) => {
                   horizontal: 'left',
                 }}
               >
-                <Typography sx={{ p: 2 }}>
-                  Tính năng đang được phát triển, vui lòng quay lại sau
-                </Typography>
+                <Box>{renderListRoomBooking()}</Box>
               </Popover>
             </Grid>
             <Grid item>
@@ -155,7 +332,7 @@ const RoomItem = (props: Props) => {
                   color={renderColorRoomChip(ERoomStatus.WORKING)}
                   variant="contained"
                   fullWidth
-                  onClick={handleUsingRoom}
+                  onClick={() => handleUsingRoom({ customerName: '', customerPhone: '' }, false)}
                   disabled={room.status === ERoomStatus.UPDATING}
                 >
                   Sử dụng

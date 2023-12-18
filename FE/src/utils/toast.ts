@@ -7,6 +7,8 @@ export const toastMessage = {
   error: (message: string) => toast.error(message || 'Lỗi hệ thống'),
   custom: (content: JSX.Element) => toast.custom(content),
   setErrors: (error: IErrors, setError?: UseFormSetError<any>) => {
+    console.log('Vao day');
+
     toast.error(error.message || 'Lỗi hệ thống');
 
     for (const key in error.errors) {

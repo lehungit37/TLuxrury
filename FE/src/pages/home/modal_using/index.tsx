@@ -16,7 +16,14 @@ import { isValidPhoneNumber } from 'src/utils/validation';
 import * as yup from 'yup';
 
 type Props = {
-  room: IRoom;
+  room: any;
+  defaultForm: {
+    customerName: string;
+    customerPhone: string;
+  };
+
+  isDisabled: boolean;
+  callback?: () => void;
 };
 
 const schema = yup.object({
@@ -24,13 +31,13 @@ const schema = yup.object({
 });
 
 function ModalUsingRoom(props: Props) {
-  const { room } = props;
+  const { room, defaultForm, isDisabled, callback } = props;
   const dispatch = useAppDispatch();
   const [isLoadingUpdate, setIsLoadingUpdate] = useState<boolean>(false);
   const { control, handleSubmit, setError } = useForm({
     defaultValues: {
-      customerName: '',
-      customerPhone: '',
+      customerName: defaultForm.customerName,
+      customerPhone: defaultForm.customerPhone,
       startDate: new Date(),
       roomId: room.id,
     },
@@ -48,9 +55,12 @@ function ModalUsingRoom(props: Props) {
     dispatch(createInvoice(data))
       .unwrap()
       .then(() => {
-        dispatch(updateRoom({ roomId: room.id, newRoom: { ...room, status: ERoomStatus.WORKING } }))
+        dispatch(updateRoom({ roomId: room.id, newRoom: { status: ERoomStatus.WORKING } }))
           .unwrap()
           .then(() => {
+            if (callback) {
+              callback();
+            }
             dispatch(closeModal({ modalId: CModalIds.usingRoom }));
             toastMessage.success('Khách nhận phòng thành công');
           })
@@ -87,10 +97,20 @@ function ModalUsingRoom(props: Props) {
         <Box flex={1}>
           <Grid container flexDirection="column">
             <Grid item>
-              <FormInput name="customerName" label="Tên khách hàng" control={control} />
+              <FormInput
+                disabled={isDisabled}
+                name="customerName"
+                label="Tên khách hàng"
+                control={control}
+              />
             </Grid>
             <Grid item>
-              <FormInput name="customerPhone" label="Số điện thoại" control={control} />
+              <FormInput
+                disabled={isDisabled}
+                name="customerPhone"
+                label="Số điện thoại"
+                control={control}
+              />
             </Grid>
 
             <Grid item>

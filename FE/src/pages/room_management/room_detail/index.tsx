@@ -75,7 +75,7 @@ function RoomDetail() {
       })
       .catch((error) => {
         if (!_.isEmpty(error.errors)) {
-          toastMessage.setErrors(error.errors, setError);
+          toastMessage.setErrors(error, setError);
           return;
         }
 

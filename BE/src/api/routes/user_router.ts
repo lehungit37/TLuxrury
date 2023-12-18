@@ -19,37 +19,97 @@ import { LoginApp } from "../../app/login";
 import { SessionApp } from "../../app/session";
 import { isValidAuth, isValidId } from "../../util/request";
 import { validateLoginPayload, validateId } from "../../util/validate";
-import { checkAuthorization } from "../middleware/authorization";
+import {
+  checkAuthorization,
+  checkPermission,
+} from "../middleware/authorization";
 
 export const userRouter = (router: IRouter) => {
   // router.post('/users/login/google', loginByGoogle);
   router.post("/users/login", login);
 
-  router.post("/users/logout", logout);
-  router.post("/users", getUserList);
-  router.post("/users/add", addUser);
-  router.post("/users/:userId/sessions/revoke/all", revokeAllSession);
-  router.post("/users/:userId/sessions/revoke", revokeOneSession);
+  router.post("/users/logout", checkAuthorization, logout);
+  router.post(
+    "/users",
+    checkAuthorization,
+    checkPermission(EPermission.GET_LIST_USER),
+    getUserList
+  );
+  router.post(
+    "/users/add",
+    checkAuthorization,
+    checkPermission(EPermission.ADD_USER),
+    addUser
+  );
+  router.post(
+    "/users/:userId/sessions/revoke/all",
+    checkAuthorization,
+    checkPermission(EPermission.UPDATE_USER),
+    revokeAllSession
+  );
+  router.post(
+    "/users/:userId/sessions/revoke",
+    checkAuthorization,
+    checkPermission(EPermission.UPDATE_USER),
+    revokeOneSession
+  );
 
-  router.put("/users/:userId/verify_password", verifyAndUpdatePassword);
+  router.put(
+    "/users/:userId/verify_password",
+    checkAuthorization,
+    checkPermission(EPermission.UPDATE_USER),
+    verifyAndUpdatePassword
+  );
   router.put(
     "/users/:userId/active_email",
-
+    checkAuthorization,
+    checkPermission(EPermission.UPDATE_USER),
     sendActiveEmail
   );
-  router.put("/users/:userId/password", checkAuthorization, updateUserPassword);
+  router.put(
+    "/users/:userId/password",
+    checkAuthorization,
+    checkPermission(EPermission.UPDATE_USER),
+    updateUserPassword
+  );
   router.put("/users/me/change_pass", checkAuthorization, updateMyPassword);
   router.put("/users/me/change_phone", checkAuthorization, updateMyPhoneNumber);
-  router.put("/users/:userId", checkAuthorization, updateUser);
+  router.put(
+    "/users/:userId",
+    checkAuthorization,
+    checkPermission(EPermission.UPDATE_USER),
+    updateUser
+  );
 
-  router.delete("/users/:userId", checkAuthorization, deleteUser);
+  router.delete(
+    "/users/:userId",
+    checkAuthorization,
+    checkPermission(EPermission.DELETE_USER),
+    checkAuthorization,
+    deleteUser
+  );
 
   router.get("/users/me", checkAuthorization, getMe);
   router.get("/users/getMe", checkAuthorization, getMe);
   router.get("/users/forgot_password", receiveEmailForgotPassword);
-  router.get("/users/checkEmail", checkExistEmail);
-  router.get("/users/:userId/sessions", getSessions);
-  router.get("/users/:userId", getDetailUser);
+  router.get(
+    "/users/checkEmail",
+    checkAuthorization,
+    checkPermission(EPermission.GET_LIST_USER),
+    checkExistEmail
+  );
+  router.get(
+    "/users/:userId/sessions",
+    checkAuthorization,
+    checkPermission(EPermission.GET_LIST_USER),
+    getSessions
+  );
+  router.get(
+    "/users/:userId",
+    checkAuthorization,
+    checkPermission(EPermission.GET_LIST_USER),
+    getDetailUser
+  );
 };
 
 const checkPermissionActionWithUser = async (

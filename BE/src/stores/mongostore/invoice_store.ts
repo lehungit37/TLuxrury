@@ -71,7 +71,7 @@ export class InvoiceStore extends BaseStore {
   getStatistical = async (filter: IStatistialFilter) => {
     const { startDate, endDate, roomId, timeType } = filter;
 
-    const dateArr = getDates(new Date(startDate), new Date(endDate), timeType);
+    const dateArr = getDates(new Date(startDate), new Date(endDate), "day");
 
     const mainCondition = {
       timePaymented: {
@@ -173,6 +173,8 @@ export class InvoiceStore extends BaseStore {
       ])
       .toArray();
 
+    console.log("Xuong day");
+
     if (!result.length) {
       const newResult: any[] = [];
       dateArr.map((date) => {
@@ -194,6 +196,8 @@ function getDates(
   endDate: Date,
   type: "day" | "week" | "month" | "year"
 ): string[] {
+  console.log({ startDate, endDate });
+
   let dateArray = [];
   let currentDate = moment(startDate).utcOffset(-420).format();
   let stopDate = moment(endDate).utcOffset(-420).format();

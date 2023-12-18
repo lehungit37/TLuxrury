@@ -11,6 +11,7 @@ import {
   DateNavigator,
   Toolbar,
   Resources,
+  DayView,
 } from '@devexpress/dx-react-scheduler-material-ui';
 
 import { useAppDispatch } from 'src/hooks';
@@ -192,6 +193,8 @@ const CalendarV2 = () => {
             getData(new Date(currentDate));
           }}
         />
+
+        {/* <DayView /> */}
 
         <WeekView startDayHour={6} endDayHour={24} />
         <AllDayPanel />

@@ -56,6 +56,21 @@ const roomSlice = createSlice({
     changeRoomSelected: (state, action: { payload: string }) => {
       state.roomIdSelected = action.payload;
     },
+
+    updateTotalBooking: (
+      state,
+      action: { payload: { roomId: string; newTotalBooking: number } },
+    ) => {
+      const { roomId, newTotalBooking } = action.payload;
+      const currentData = [...state.roomData.data];
+      const index = currentData.findIndex((item) => item.id === roomId);
+      if (index !== -1) {
+        const newItem = { ...currentData[index], totalBooking: newTotalBooking };
+        currentData.splice(index, 1, newItem);
+
+        state.roomData.data = currentData;
+      }
+    },
   },
   extraReducers(builder) {
     builder
@@ -97,5 +112,6 @@ const roomSlice = createSlice({
 
 const { actions, reducer } = roomSlice;
 
-export const { changePayloadGetRoom, resetRoomState, changeRoomSelected } = actions;
+export const { changePayloadGetRoom, resetRoomState, changeRoomSelected, updateTotalBooking } =
+  actions;
 export default reducer;

@@ -1,16 +1,13 @@
-import { Box, Typography } from '@mui/material';
 import React, { PureComponent } from 'react';
+import { Box, Typography } from '@mui/material';
 import {
   BarChart,
   Bar,
-  Rectangle,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
-  Label,
-  Line,
   ResponsiveContainer,
 } from 'recharts';
 import theme from 'src/theme';

@@ -21,6 +21,8 @@ export const invoiceAPI = {
     return client.get(`/invoices/statistical?${query}`, payload);
   },
   exportSyntheticViolation: (payload: any) => {
-    return client.post(`/invoices/statistical/exportReport`, payload);
+    return client.post(`/invoices/statistical/exportReport`, payload, {
+      responseType: 'blob',
+    });
   },
 };

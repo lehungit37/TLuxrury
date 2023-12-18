@@ -7,17 +7,56 @@ import { IPayloadGetRole, IRole } from "../../interface/role";
 import { RoleModel } from "../../models/role";
 import { AppError } from "../../models/util";
 import { isObjectId } from "../../util/validate";
+import {
+  checkAuthorization,
+  checkPermission,
+} from "../middleware/authorization";
 
-const level = ERoleLevel.SUPER_ADMIN;
+// const level = ERoleLevel.SUPER_ADMIN;
 
 export const roleRouter = (router: IRouter) => {
-  router.post("/roles", getRoleList);
-  router.post("/roles/add", addRole);
-  router.get("/roles/:roleId", getById);
-  router.get("/roles/:roleId/users", getUserByRoleId);
-  router.put("/roles/:roleId", updateRole);
-  router.delete("/roles/:roleId", deleteRole);
-  router.get("/roles", getRoleByLevel);
+  router.post(
+    "/roles",
+    checkAuthorization,
+    checkPermission(EPermission.GET_LIST_ROLE),
+    getRoleList
+  );
+  router.post(
+    "/roles/add",
+    checkAuthorization,
+    checkPermission(EPermission.ADD_ROLE),
+    addRole
+  );
+  router.get(
+    "/roles/:roleId",
+    checkAuthorization,
+    checkPermission(EPermission.GET_LIST_ROLE),
+    getById
+  );
+  router.get(
+    "/roles/:roleId/users",
+    checkAuthorization,
+    checkPermission(EPermission.GET_LIST_ROLE),
+    getUserByRoleId
+  );
+  router.put(
+    "/roles/:roleId",
+    checkAuthorization,
+    checkPermission(EPermission.UPDATE_ROLE),
+    updateRole
+  );
+  router.delete(
+    "/roles/:roleId",
+    checkAuthorization,
+    checkPermission(EPermission.DELETE_ROLE),
+    deleteRole
+  );
+  router.get(
+    "/roles",
+    checkAuthorization,
+    checkPermission(EPermission.GET_LIST_ROLE),
+    getRoleByLevel
+  );
 };
 
 const getRoleList = async (req: Request, res: Response, next: NextFunction) => {
@@ -28,6 +67,8 @@ const getRoleList = async (req: Request, res: Response, next: NextFunction) => {
     //   req,
     //   EPermission.GET_LIST_ROLE
     // );
+
+    const level = Number(req.headers.level);
     const data = await new RoleApp().getListRole(query, level);
 
     res.json(data);
@@ -174,7 +215,7 @@ const getRoleByLevel = async (
     //   req,
     //   EPermission.GET_LIST_ROLE
     // );
-
+    const level = Number(req.headers.level);
     const result = await new RoleApp().getRoleByLevel(level);
 
     res.json(result);

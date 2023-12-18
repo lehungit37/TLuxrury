@@ -62,4 +62,8 @@ export const roomApi = {
   updateRoomBooking: (id: string, data: any) => {
     return client.put(`/room_booking/${id}`, data);
   },
+
+  getRoomBookingByRoomId: (roomId: string) => {
+    return client.get<IRoomBooking[]>(`/rooms/${roomId}/bookings`);
+  },
 };

@@ -5,9 +5,30 @@ import store from "../stores";
 import { IStatistialFilter } from "../interface/invoices";
 import ExcelJs from "exceljs";
 import { forEach, isEmpty, has } from "lodash";
+import { ERoomStatus } from "../interface/room";
 
 export class InvoiceApp {
   async createInvoice(data: any) {
+    const roomId = data.roomId;
+
+    if (!roomId) {
+      throw new AppError(
+        "invoiceApp.createInvoice",
+        "RoomId không hợp lệ",
+        StatusCodes.BAD_REQUEST
+      );
+    }
+
+    const room = await new RoomApp().getById(roomId);
+
+    if (room.status !== ERoomStatus.FREE) {
+      throw new AppError(
+        "invoiceApp.createInvoice",
+        `Phòng ${room.name} hiện không rảnh, vui lòng quay lại sau`,
+        StatusCodes.BAD_REQUEST
+      );
+    }
+
     await store
       .invoiceStore()
       .create(data)
@@ -33,17 +54,20 @@ export class InvoiceApp {
     const invoice = await this.getInvoiceByRoomId(roomId, "unpaid");
     const room = await new RoomApp().getById(roomId);
     const roomPrice = room.price;
+    const roomPromotion = room.promotion;
+
+    const amount = roomPrice - roomPromotion;
 
     const endDate = new Date();
 
     const dataUpdateInvoice = {
       endDate,
-      amount: roomPrice,
+      amount,
     };
 
     await store.invoiceStore().update(invoice.id, dataUpdateInvoice);
 
-    return { ...invoice, amount: roomPrice };
+    return { ...invoice, amount };
   }
 
   async invoicePaided(invoiceId: string) {
@@ -67,7 +91,7 @@ export class InvoiceApp {
       roomName = room.name;
     }
 
-    const result = await store.invoiceStore().getStatistical(filter);
+    const result = await this.getStatistical(filter);
 
     try {
       let workbook = new ExcelJs.Workbook();
@@ -119,11 +143,9 @@ export class InvoiceApp {
 
       let order = 1;
       forEach(result, (item) => {
-        let row = [];
-        row.push(order);
-        row.push(item.id);
-        row.push(roomName);
-        row.push(item.totalAmount);
+        let row = [order, item.id, roomName, item.totalAmount];
+
+        console.log(row);
 
         worksheet.addRow(row);
         order++;
@@ -131,8 +153,6 @@ export class InvoiceApp {
 
       return workbook;
     } catch (error: any) {
-      console.log(error);
-
       throw new AppError(
         `reportStatisticalExcel()`,
         "Xuất báo cáo thống kê thất bại",
